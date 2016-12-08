@@ -72,14 +72,12 @@ class CaptionGenerator(object):
         with tf.variable_scope(name, reuse=reuse):
             w1 = tf.get_variable('w1', [dim_h, dim_u], initializer=self.weight_initializer)
             w2 = tf.get_variable('w2', [dim_u, 1], initializer=self.weight_initializer)
-            #w3 = tf.get_variable('w3', [dim_u, dim_u], initializer=self.weight_initializer)
             b1 = tf.get_variable('b1', [dim_u], initializer=self.const_initializer)
             b2 = tf.get_variable('b2', [dim_u], initializer=self.const_initializer)
 
             # computer posterior higher attention  
             sparse = tf.nn.sigmoid(tf.matmul(h, w1)+b1)
-            result0 = features * tf.expand_dims(sparse,1)   
-            #out1 = tf.nn.relu(tf.matmul(tf.reshape(result0,[-1,dim_u]),w3)+b2)                   
+            result0 = features * tf.expand_dims(sparse,1)                    
             out1 = tf.nn.tanh(tf.reshape(result0,[-1,dim_u]) + b2)
             out2 = tf.nn.sigmoid(tf.reshape(tf.matmul(out1,w2),[-1,shape_u**2]))                    
             alpha = tf.nn.softmax(out2)  
@@ -91,7 +89,6 @@ class CaptionGenerator(object):
         with tf.variable_scope(name, reuse=reuse):
             w1 = tf.get_variable('w1', [dim_h, dim_u], initializer=self.weight_initializer)
             w2 = tf.get_variable('w2', [dim_u, 1], initializer=self.weight_initializer)
-            #w3 = tf.get_variable('w3', [dim_u, dim_u], initializer=self.weight_initializer)
             b1 = tf.get_variable('b1', [dim_u], initializer=self.const_initializer)
             b2 = tf.get_variable('b2', [dim_u], initializer=self.const_initializer)
 
@@ -104,63 +101,13 @@ class CaptionGenerator(object):
 
             # computer posterior higher attention  
             sparse = tf.nn.sigmoid(tf.matmul(h, w1)+b1)
-            result0 = features * tf.expand_dims(sparse,1)   
-            #out1 = tf.nn.relu(tf.matmul(tf.reshape(result0,[-1,dim_u]),w3)+b2)                  
+            result0 = features * tf.expand_dims(sparse,1)             
             out1 = tf.nn.tanh(tf.reshape(result0,[-1,dim_u]) + b2)
             out2 = tf.nn.sigmoid(tf.reshape(tf.matmul(out1,w2),[-1,shape_u**2]))
             alpha = tf.nn.softmax(out2+alpha_truncate)  
             context = tf.reduce_sum(features * tf.expand_dims(alpha, 2), 1)   
             return context, alpha
 
-    """
-    def _combine_contexts(self,name,dim_c1,dim_c2,context1,context2,output_dim,reuse=False):
-        with tf.variable_scope(name,reuse=reuse):
-            w1 = tf.get_variable('w1', [dim_c1, output_dim], initializer=self.weight_initializer)
-            w2 = tf.get_variable('w2', [dim_c2, output_dim], initializer=self.weight_initializer)
-            b1 = tf.get_variable('b1', [output_dim], initializer=self.const_initializer)
-            b2 = tf.get_variable('b2', [output_dim], initializer=self.const_initializer)
-            
-            c1 = tf.matmul(context1,w1)+b1
-            c2 = tf.matmul(context2,w2)+b2
-            combined_context = tf.nn.tanh(c1+c2)
-
-            return combined_context
-    
-    
-    def _combine_contexts(self,name,dim_c1,dim_c2,context1,context2,output_dim,reuse=False):
-        with tf.variable_scope(name,reuse=reuse):
-            w = tf.get_variable('w', [dim_c1+dim_c2, output_dim], initializer=self.weight_initializer)
-            b = tf.get_variable('b', [output_dim], initializer=self.const_initializer)
-            w1 = tf.get_variable('w1', [dim_c1, dim_c1], initializer=self.weight_initializer)
-            b1 = tf.get_variable('b1', [dim_c1], initializer=self.const_initializer)
-            w2 = tf.get_variable('w2', [dim_c2, dim_c2], initializer=self.weight_initializer)
-            b2 = tf.get_variable('b2', [dim_c2], initializer=self.const_initializer)
-            
-            c1 = tf.nn.relu(tf.matmul(context1,w1)+b1)
-            c2 = tf.nn.relu(tf.matmul(context2,w2)+b2)
-            concated = tf.concat(1, [c1,c2])
-            combined_context = tf.nn.tanh(tf.matmul(concated,w) + b)
-            concated = tf.nn.dropout(concated,self.dropout_keep_prob)
-            return combined_context
-        
-
-    
-    
-    def _combine_contexts(self,name,dim_c1,dim_c2,context1,context2,output_dim,reuse=False):
-        with tf.variable_scope(name,reuse=reuse):
-            w1 = tf.get_variable('w1', [dim_c1+dim_c2, output_dim], initializer=self.weight_initializer)
-            b1 = tf.get_variable('b1', [output_dim], initializer=self.const_initializer)
-            w2 = tf.get_variable('w2', [output_dim, output_dim], initializer=self.weight_initializer)
-            b2 = tf.get_variable('b2', [output_dim], initializer=self.const_initializer)
-            
-            c = tf.concat(1, [context1, context2])
-            combined_context_ = tf.nn.relu(tf.matmul(c,w1)+b1)
-            #combined_context_ = tf.nn.dropout(combined_context_, self.dropout_keep_prob)
-            combined_context = tf.nn.tanh(tf.matmul(combined_context_,w2)+b2)
-            return combined_context
-    
-    
-    """
     def _combine_contexts(self,name,dim_c1,dim_c2,context1,context2,output_dim,reuse=False):
         with tf.variable_scope(name,reuse=reuse):
             w1 = tf.get_variable('w1', [dim_c1, output_dim], initializer=self.weight_initializer)
