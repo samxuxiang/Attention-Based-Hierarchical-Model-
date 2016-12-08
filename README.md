@@ -18,3 +18,6 @@ This is the code for the image captioning part
 
 (5) Test your model [test.py]
 
+
+Have Fun :)
+
