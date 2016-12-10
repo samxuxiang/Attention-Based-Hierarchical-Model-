@@ -18,6 +18,8 @@ This is the code for the image captioning part
 
 (5) Test your model [test.py]
 
+For evaluation, use pycocoevalcap [git clone https://github.com/tylin/coco-caption.git]
+
 
 Have Fun :)
 
