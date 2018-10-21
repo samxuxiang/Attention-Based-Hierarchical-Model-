@@ -6,6 +6,8 @@ Use hierarchical attention from different feature layer to generate image captio
 
 This is the code for the final project of 10-807 at CMU
 
+You need to have tensorflow installed.
+
 This is the code for the image captioning part
 
 (1) Download MS COCO data, download VGG16 pretrained model [https://www.cs.toronto.edu/~frossard/post/vgg16/]
@@ -21,5 +23,4 @@ This is the code for the image captioning part
 For evaluation, use pycocoevalcap [git clone https://github.com/tylin/coco-caption.git]
 
 
-Have Fun :)
 
